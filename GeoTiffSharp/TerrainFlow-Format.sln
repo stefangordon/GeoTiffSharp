@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoTiffSharp", "GeoTiffSharp.csproj", "{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "..\Sample\Sample.csproj", "{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30914B50-97BD-4FBA-BC67-6629398A64DC}"
@@ -12,20 +10,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\SampleData\binary.dat = ..\SampleData\binary.dat
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainFlowFormatLib", "TerrainFlowFormatLib.csproj", "{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

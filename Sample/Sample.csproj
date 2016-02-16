@@ -56,12 +56,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GeoTiffSharp\GeoTiffSharp.csproj">
-      <Project>{9d8fec8b-0cbe-46b9-bf1c-5e6bd1cea12f}</Project>
-      <Name>GeoTiffSharp</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
