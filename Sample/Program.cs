@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GeoTiffSharp;
 using Newtonsoft.Json;
+using GeoTiffSharp;
 
 namespace Sample
 {
