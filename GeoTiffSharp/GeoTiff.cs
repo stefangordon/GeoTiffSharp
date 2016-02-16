@@ -12,9 +12,9 @@ namespace GeoTiffSharp
 {
     public static class GeoTiff
     {
-        public static GeoTiffMetadata ParseMetadata(string filename)
+        public static FileMetadata ParseMetadata(string filename)
         {
-            GeoTiffMetadata metadata = new GeoTiffMetadata();
+            FileMetadata metadata = new FileMetadata();
 
             using (Tiff tiff = Tiff.Open(filename, "r"))
             {
@@ -25,8 +25,8 @@ namespace GeoTiffSharp
                 FieldValue[] modelTiepointTag = tiff.GetField((TiffTag)33922);
 
                 byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-                metadata.PixelSizeX = BitConverter.ToDouble(modelPixelScale, 0);
-                metadata.PixelSizeY = BitConverter.ToDouble(modelPixelScale, 8);
+                metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
+                metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
 
                 // Ignores first set of model points (3 bytes) and assumes they are 0's...
                 byte[] modelTransformation = modelTiepointTag[1].GetBytes();
@@ -34,14 +34,15 @@ namespace GeoTiffSharp
                 metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
 
                 // Grab some raster metadata
-                metadata.RasterBitsPerSample = tiff.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
-                metadata.RasterSamplesPerPixel = tiff.GetField(TiffTag.SAMPLESPERPIXEL)[0].ToInt();                
+                metadata.BitsPerSample = tiff.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
+
+                metadata.WorldUnits = "meter";             
             }
 
             return metadata;
         }
 
-        public static void WriteBinary(string inputFilename, string outputFilename, GeoTiffMetadata metadata)
+        public static void WriteBinary(string inputFilename, string outputFilename, FileMetadata metadata)
         {
             using (Tiff tiff = Tiff.Open(inputFilename, "r"))
             {

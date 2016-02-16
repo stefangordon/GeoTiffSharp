@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoTiffSharp", "GeoTiffSharp.csproj", "{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainFlowFormatLib", "TerrainFlowFormatLib.csproj", "{9D8FEC8B-0CBE-46B9-BF1C-5E6BD1CEA12F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "..\Sample\Sample.csproj", "{45A7C046-8143-4CBE-84A2-7F228CD1A0EC}"
 EndProject

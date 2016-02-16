@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeoTiff.cs" />
-    <Compile Include="GeoTiffMetadata.cs" />
+    <Compile Include="FileMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

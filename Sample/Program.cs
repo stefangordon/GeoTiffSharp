@@ -17,17 +17,18 @@ namespace Sample
 
         static void Main(string[] args)
         {
-            // Write out metadata to console
+            // Save metadata
+            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "metadata.json");
+            if (File.Exists(outputPath)) File.Delete(outputPath);
+
             var result = GeoTiff.ParseMetadata(tiffPath);
-            Console.Write(JsonConvert.SerializeObject(result));
+            File.WriteAllText(outputPath, JsonConvert.SerializeObject(result, Formatting.Indented));
 
             // Save image              
-            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
+            outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
             if (File.Exists(outputPath)) File.Delete(outputPath);
-            GeoTiff.WriteBinary(tiffPath, outputPath, result);
 
-            // Wait...         
-            Console.ReadKey();
+            GeoTiff.WriteBinary(tiffPath, outputPath, result);
         }
     }
 }
