@@ -1,0 +1,28 @@
+**** This is output from listgeo.exe for reference ****
+
+Geotiff_Information:
+   Version: 1
+   Key_Revision: 1.0
+   Tagged_Information:
+      ModelTiepointTag (2,3):
+         0                0                0                
+         267431.837       2564370.94       0                
+      ModelPixelScaleTag (1,3):
+         1.07359          1.07359          0                
+      End_Of_Tags.
+   Keyed_Information:
+      GTRasterTypeGeoKey (Short,1): RasterPixelIsArea
+      GTCitationGeoKey (Ascii,14): "Arbitrary (m)"
+      GeogAngularUnitsGeoKey (Short,1): Angular_Degree
+      ProjLinearUnitsGeoKey (Short,1): Linear_Meter
+      End_Of_Keys.
+   End_Of_Geotiff.
+
+Projection Linear Units: 9001/metre (1.000000m)
+
+Corner Coordinates:
+Upper Left    (  267431.837, 2564370.940)
+Lower Left    (  267431.837, 2560757.236)
+Upper Right   (  270516.261, 2564370.940)
+Lower Right   (  270516.261, 2560757.236)
+Center        (  268974.049, 2562564.088)
