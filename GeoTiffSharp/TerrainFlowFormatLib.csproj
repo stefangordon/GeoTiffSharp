@@ -46,8 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileMetadata.cs" />
     <Compile Include="GeoTiff.cs" />
     <Compile Include="GeoTiffMetadata.cs" />
+    <Compile Include="ObjParser\Extent.cs" />
+    <Compile Include="ObjParser\GeoObj.cs" />
+    <Compile Include="ObjParser\Obj.cs" />
+    <Compile Include="ObjParser\Types\Face.cs" />
+    <Compile Include="ObjParser\Types\IType.cs" />
+    <Compile Include="ObjParser\Types\TextureVertex.cs" />
+    <Compile Include="ObjParser\Types\Vertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
