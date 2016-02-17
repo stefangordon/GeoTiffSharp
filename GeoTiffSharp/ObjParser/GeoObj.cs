@@ -12,6 +12,8 @@ namespace ObjParser
         {
             Obj obj = new Obj();
             obj.LoadObj(filename);
+
+            return null;
         }
     }
 }

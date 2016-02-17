@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BitMiracle.LibTiff.Classic;
+using SharpLZW;
 
 namespace GeoTiffSharp
 {
@@ -44,24 +46,24 @@ namespace GeoTiffSharp
 
         public static void WriteBinary(string inputFilename, string outputFilename, FileMetadata metadata)
         {
+ 
             using (Tiff tiff = Tiff.Open(inputFilename, "r"))
             {
-
+                
                 using (var outStream = File.OpenWrite(outputFilename))
                 {
                     BinaryWriter writer = new BinaryWriter(outStream);
 
-                    for (int i = 0; i < tiff.NumberOfStrips(); i++)
-                    {
-                        int stripSize = (int)tiff.RawStripSize(i);
-                        byte[] buffer = new byte[stripSize];
-                        tiff.ReadRawStrip(i, buffer, 0, (int)tiff.RawStripSize(i));
-
-                        outStream.Write(buffer, 0, stripSize);
+                    for (int i = 0; i < metadata.Height; i++)
+                    {                    
+                        byte[] buffer = new byte[metadata.Width * 4];
+                        tiff.ReadScanline(buffer, i);
+                                                                
+                        outStream.Write(buffer, 0, metadata.Width * 4);
                     }                                             
                 }
             }
-        } 
+        }
 
     }
 }
