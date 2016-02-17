@@ -13,7 +13,7 @@ namespace GeoTiffSharp
     {
         static readonly int BITS_PER_SAMPLE = 16;
 
-        static readonly int TARGET_MAP_HEIGHT = 300;
+        static readonly int TARGET_MAP_HEIGHT = 100;
 
         public static FileMetadata ParseMetadata(string filename, string outputFile = null)
         {
@@ -191,7 +191,7 @@ namespace GeoTiffSharp
                 {
                     foreach(var height in heights)
                     {
-                        bytesToWrite = BitConverter.GetBytes((short)((height - minHeight/heightRange) * short.MaxValue));
+                        bytesToWrite = BitConverter.GetBytes((short)(((height - minHeight)/heightRange) * short.MaxValue));
                         stream.Write(bytesToWrite, 0, bytesToWrite.Length);
                     }
                 }
