@@ -47,9 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileMetadata.cs" />
+    <Compile Include="GeoObj.cs" />
     <Compile Include="GeoTiff.cs" />
     <Compile Include="ObjParser\Extent.cs" />
-    <Compile Include="ObjParser\GeoObj.cs" />
     <Compile Include="ObjParser\Obj.cs" />
     <Compile Include="ObjParser\Types\Face.cs" />
     <Compile Include="ObjParser\Types\IType.cs" />
