@@ -46,14 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ANSI.cs" />
-    <Compile Include="BitReader.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileMetadata.cs" />
     <Compile Include="GeoObj.cs" />
     <Compile Include="GeoTiff.cs" />
-    <Compile Include="LZWDecoder.cs" />
-    <Compile Include="LZWEncoder.cs" />
     <Compile Include="ObjParser\Extent.cs" />
     <Compile Include="ObjParser\Obj.cs" />
     <Compile Include="ObjParser\Types\Face.cs" />
