@@ -27,24 +27,23 @@ namespace Sample
             var objBitmapOutput = Path.Combine(Path.GetDirectoryName(objPath), "objDiagnostic.bmp");
             if (File.Exists(objBitmapOutput)) File.Delete(objBitmapOutput);
 
-            var objResult = GeoObj.ParseMetadata(objPath, objBinaryOutput, objBitmapOutput, 100);
-            File.WriteAllText(objMetadataOutput, JsonConvert.SerializeObject(objResult, Formatting.Indented));
+            var objConverter = new GeoObj();
+
+            objConverter.ConvertToHeightMap(objPath, objBinaryOutput, objMetadataOutput, objBitmapOutput);
             
             // Save metadata
-            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "metadata.json");
-            if (File.Exists(outputPath)) File.Delete(outputPath);
-
-            var result = GeoTiff.ParseMetadata(tiffPath);
-            File.WriteAllText(outputPath, JsonConvert.SerializeObject(result, Formatting.Indented));
-
+            var outputManifestPath = Path.Combine(Path.GetDirectoryName(tiffPath), "metadata.json");
+            if (File.Exists(outputManifestPath)) File.Delete(outputManifestPath);
+            
             // Save image              
-            outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
+            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
             if (File.Exists(outputPath)) File.Delete(outputPath);
 
             var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "diagnostic.bmp");
             if (File.Exists(bitmapPath)) File.Decrypt(bitmapPath);
 
-            GeoTiff.WriteBinary(tiffPath, outputPath, bitmapPath, result);
+            GeoTiff tiffConverter = new GeoTiff();
+            tiffConverter.ConvertToHeightMap(tiffPath, outputPath, outputManifestPath, bitmapPath);
         }
     }
 }

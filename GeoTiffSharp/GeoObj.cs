@@ -1,4 +1,5 @@
-﻿using ObjParser;
+﻿using Newtonsoft.Json;
+using ObjParser;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace GeoTiffSharp
 {
-    public static class GeoObj
+    public class GeoObj : IHeightMapConverter
     {
         static readonly int BITS_PER_SAMPLE = 32;
 
-        public static FileMetadata ParseMetadata(string filename, string outputFile, string outputBitmap, int targetPixelWidth)
+        private static FileMetadata ParseMetadata(string filename, string outputFile, string outputBitmap, int targetPixelWidth)
         {
             FileMetadata metadata = new FileMetadata();
 
@@ -190,6 +191,12 @@ namespace GeoTiffSharp
 
             return metadata;
 
+        }
+
+        public void ConvertToHeightMap(string inputFile, string outputBinary, string outputMetadata, string outputDiagnosticBitmap)
+        {
+            var result = GeoObj.ParseMetadata(inputFile, outputBinary, outputDiagnosticBitmap, 100);
+            File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(result, Formatting.Indented));
         }
     }
 }

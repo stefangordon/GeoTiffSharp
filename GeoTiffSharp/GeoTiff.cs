@@ -7,13 +7,16 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using BitMiracle.LibTiff.Classic;
 
 namespace GeoTiffSharp
 {
-    public static class GeoTiff
+    public class GeoTiff : IHeightMapConverter
     {
-        public static FileMetadata ParseMetadata(string filename)
+        Tiff _tiff;
+
+        private static FileMetadata ParseMetadata(string filename)
         {
             FileMetadata metadata = new FileMetadata();
 
@@ -89,7 +92,7 @@ namespace GeoTiffSharp
             }
         }
 
-        public static void WriteBinary(string inputFilename, string outputFilename, string bitmapFilename, FileMetadata metadata)
+        private static void WriteBinary(string inputFilename, string outputFilename, string bitmapFilename, FileMetadata metadata)
         {        
             float min = float.MaxValue;
             float max = float.MinValue;
@@ -149,5 +152,12 @@ namespace GeoTiffSharp
             }                                                                                               
         }
 
+        public void ConvertToHeightMap(string inputFile, string outputBinary, string outputMetadata, string outputDiagnosticBitmap)
+        {
+            var result = GeoTiff.ParseMetadata(inputFile);
+            File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(result, Formatting.Indented));
+
+            GeoTiff.WriteBinary(inputFile, outputBinary, outputDiagnosticBitmap, result);
+        }
     }
 }
