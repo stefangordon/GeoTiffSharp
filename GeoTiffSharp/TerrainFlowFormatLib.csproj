@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DiagnosticUtils.cs" />
     <Compile Include="FileMetadata.cs" />
     <Compile Include="GeoObj.cs" />
     <Compile Include="GeoTiff.cs" />

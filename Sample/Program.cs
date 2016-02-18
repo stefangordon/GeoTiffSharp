@@ -24,7 +24,10 @@ namespace Sample
             var objBinaryOutput = Path.Combine(Path.GetDirectoryName(objPath), "objBinary.dat");
             if (File.Exists(objBinaryOutput)) File.Delete(objBinaryOutput);
 
-            var objResult = GeoObj.ParseMetadata(objPath, objBinaryOutput);
+            var objBitmapOutput = Path.Combine(Path.GetDirectoryName(objPath), "objDiagnostic.bmp");
+            if (File.Exists(objBitmapOutput)) File.Delete(objBitmapOutput);
+
+            var objResult = GeoObj.ParseMetadata(objPath, objBinaryOutput, objBitmapOutput);
             File.WriteAllText(objMetadataOutput, JsonConvert.SerializeObject(objResult, Formatting.Indented));
             
             // Save metadata
@@ -38,7 +41,10 @@ namespace Sample
             outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
             if (File.Exists(outputPath)) File.Delete(outputPath);
 
-            GeoTiff.WriteBinary(tiffPath, outputPath, result);
+            var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "diagnostic.bmp");
+            if (File.Exists(bitmapPath)) File.Decrypt(bitmapPath);
+
+            GeoTiff.WriteBinary(tiffPath, outputPath, bitmapPath, result);
         }
     }
 }

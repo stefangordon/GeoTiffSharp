@@ -16,5 +16,7 @@ namespace GeoTiffSharp
         public double OriginLongitude { get; set; }
         public int BitsPerSample { get; set; }
         public string WorldUnits { get; set; }
+        public string SampleFormat { get; set; }
+        public string NoDataValue { get; set; }
     }
 }
