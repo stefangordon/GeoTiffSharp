@@ -26,6 +26,8 @@ namespace GeoTiffSharp
             double pointsPerPixel = obj.Size.YSize / TARGET_MAP_HEIGHT;
             metadata.Height = (int)(obj.Size.YSize / pointsPerPixel) + 1;
             metadata.Width = (int)(obj.Size.XSize / pointsPerPixel) + 1;
+            metadata.PixelScaleX = pointsPerPixel;
+            metadata.PixelScaleY = pointsPerPixel;
             double[,] heights = new double[metadata.Height, metadata.Width];
             bool[,] dataPresent = new bool[metadata.Height, metadata.Width];
             Bitmap bm = new Bitmap(metadata.Width, metadata.Height);
@@ -191,7 +193,7 @@ namespace GeoTiffSharp
                 {
                     foreach(var height in heights)
                     {
-                        bytesToWrite = BitConverter.GetBytes((short)(((height - minHeight)/heightRange) * short.MaxValue));
+                        bytesToWrite = BitConverter.GetBytes((short)(height/pointsPerPixel));
                         stream.Write(bytesToWrite, 0, bytesToWrite.Length);
                     }
                 }
