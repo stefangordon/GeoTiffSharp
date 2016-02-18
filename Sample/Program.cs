@@ -42,8 +42,10 @@ namespace Sample
             var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "diagnostic.bmp");
             if (File.Exists(bitmapPath)) File.Decrypt(bitmapPath);
 
-            GeoTiff tiffConverter = new GeoTiff();
-            tiffConverter.ConvertToHeightMap(tiffPath, outputPath, outputManifestPath, bitmapPath);
+            using (GeoTiff tiffConverter = new GeoTiff())
+            {
+                tiffConverter.ConvertToHeightMap(tiffPath, outputPath, outputManifestPath, bitmapPath);
+            }
         }
     }
 }

@@ -12,41 +12,58 @@ using BitMiracle.LibTiff.Classic;
 
 namespace GeoTiffSharp
 {
-    public class GeoTiff : IHeightMapConverter
+    public class GeoTiff : IHeightMapConverter, IDisposable
     {
         Tiff _tiff;
 
-        private static FileMetadata ParseMetadata(string filename)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tiff?.Dispose();
+            }
+        }
+
+        ~GeoTiff()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private FileMetadata ParseMetadata(string filename)
         {
             FileMetadata metadata = new FileMetadata();
+            _tiff = Tiff.Open(filename, "r");
 
-            using (Tiff tiff = Tiff.Open(filename, "r"))
-            {
-                metadata.Height = tiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
-                metadata.Width = tiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
+            metadata.Height = _tiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
+            metadata.Width = _tiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
 
-                FieldValue[] modelPixelScaleTag = tiff.GetField((TiffTag)33550);
-                FieldValue[] modelTiepointTag = tiff.GetField((TiffTag)33922);
+            FieldValue[] modelPixelScaleTag = _tiff.GetField((TiffTag)33550);
+            FieldValue[] modelTiepointTag = _tiff.GetField((TiffTag)33922);
 
-                byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-                metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
-                metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
+            byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
+            metadata.PixelScaleX = BitConverter.ToDouble(modelPixelScale, 0);
+            metadata.PixelScaleY = BitConverter.ToDouble(modelPixelScale, 8);
 
-                // Ignores first set of model points (3 bytes) and assumes they are 0's...
-                byte[] modelTransformation = modelTiepointTag[1].GetBytes();
-                metadata.OriginLongitude = BitConverter.ToDouble(modelTransformation, 24);
-                metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
+            // Ignores first set of model points (3 bytes) and assumes they are 0's...
+            byte[] modelTransformation = modelTiepointTag[1].GetBytes();
+            metadata.OriginLongitude = BitConverter.ToDouble(modelTransformation, 24);
+            metadata.OriginLatitude = BitConverter.ToDouble(modelTransformation, 32);
 
-                // Grab some raster metadata
-                metadata.BitsPerSample = tiff.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
+            // Grab some raster metadata
+            metadata.BitsPerSample = _tiff.GetField(TiffTag.BITSPERSAMPLE)[0].ToInt();
 
-                // Add other information about the data
-                metadata.SampleFormat = "Single";
-                // TODO: Read this from tiff metadata or determine after parsing
-                metadata.NoDataValue = "-10000";
+            // Add other information about the data
+            metadata.SampleFormat = "Single";
+            // TODO: Read this from tiff metadata or determine after parsing
+            metadata.NoDataValue = "-10000";
 
-                metadata.WorldUnits = "meter";             
-            }
+            metadata.WorldUnits = "meter";
 
             return metadata;
         }
@@ -72,7 +89,7 @@ namespace GeoTiffSharp
                                 {
                                     Console.WriteLine($"      [{k}] {BitConverter.ToDouble(bytes, k * 8)}");
                                 }
-                            }            
+                            }
 
                             try
                             {
@@ -92,72 +109,52 @@ namespace GeoTiffSharp
             }
         }
 
-        private static void WriteBinary(string inputFilename, string outputFilename, string bitmapFilename, FileMetadata metadata)
-        {        
+        private void WriteBinary(string inputFilename, string outputFilename, string bitmapFilename, FileMetadata metadata)
+        {
             float min = float.MaxValue;
             float max = float.MinValue;
             float range;
 
             float[,] data = new float[metadata.Width, metadata.Height];
 
-            using (Tiff tiff = Tiff.Open(inputFilename, "r"))
+
+            using (var outStream = File.OpenWrite(outputFilename))
             {
-                using (var outStream = File.OpenWrite(outputFilename))
+                BinaryWriter writer = new BinaryWriter(outStream);
+
+                for (int i = 0; i < metadata.Height; i++)
                 {
-                    BinaryWriter writer = new BinaryWriter(outStream);
-                    
-                    for (int i = 0; i < metadata.Height; i++)
-                    {                 
-                        byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
-                        tiff.ReadScanline(buffer, i);
-                        for(int p = 0;p<metadata.Width;p++)
+                    byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
+                    _tiff.ReadScanline(buffer, i);
+                    for (int p = 0; p < metadata.Width; p++)
+                    {
+                        var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
+                        data[p, i] = heightValue;
+                        if (heightValue != -10000)
                         {
-                            var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                            data[p, i] = heightValue;
-                            if (heightValue != -10000)
-                            {
-                                min = Math.Min(min, heightValue);
-                                max = Math.Max(max, heightValue);                                                     
-                            }                                                                                      
-                        }                                        
-                        outStream.Write(buffer, 0, metadata.Width * 4);
-                    }                                             
+                            min = Math.Min(min, heightValue);
+                            max = Math.Max(max, heightValue);
+                        }
+                    }
+                    outStream.Write(buffer, 0, metadata.Width * 4);
                 }
 
                 // compute range of heights so we can normalize the values for the grayscale bmp
                 range = max - min;
 
-                if(!string.IsNullOrEmpty(bitmapFilename))
+                if (!string.IsNullOrEmpty(bitmapFilename))
                 {
                     DiagnosticUtils.OutputDebugBitmap(data, min, max, bitmapFilename, -10000);
-                    //Bitmap bm = new Bitmap(metadata.Width, metadata.Height);
-                    //for (int i = 0; i < metadata.Height; i++)
-                    //{
-                    //    byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
-                    //    tiff.ReadScanline(buffer, i);
-                    //    for (int p = 0; p < metadata.Width; p++)
-                    //    {
-                    //        var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                    //        var normalizedColor = 0;
-                    //        if (heightValue != -10000)
-                    //        {
-                    //            normalizedColor = (short)((heightValue - min) / range * 255);
-                    //        }
-                    //        bm.SetPixel(p, i, Color.FromArgb(normalizedColor, normalizedColor, normalizedColor));
-                    //    }
-                    //}
-
-                    //bm.Save(bitmapFilename);
                 }
-            }                                                                                               
+            }
         }
 
         public void ConvertToHeightMap(string inputFile, string outputBinary, string outputMetadata, string outputDiagnosticBitmap)
         {
-            var result = GeoTiff.ParseMetadata(inputFile);
+            var result = ParseMetadata(inputFile);
             File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(result, Formatting.Indented));
 
-            GeoTiff.WriteBinary(inputFile, outputBinary, outputDiagnosticBitmap, result);
+            WriteBinary(inputFile, outputBinary, outputDiagnosticBitmap, result);
         }
     }
 }
