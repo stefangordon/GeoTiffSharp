@@ -95,13 +95,14 @@ namespace GeoTiffSharp
             float max = float.MinValue;
             float range;
 
+            float[,] data = new float[metadata.Width, metadata.Height];
+
             using (Tiff tiff = Tiff.Open(inputFilename, "r"))
             {
                 using (var outStream = File.OpenWrite(outputFilename))
                 {
                     BinaryWriter writer = new BinaryWriter(outStream);
-
-
+                    
                     for (int i = 0; i < metadata.Height; i++)
                     {                 
                         byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
@@ -109,7 +110,7 @@ namespace GeoTiffSharp
                         for(int p = 0;p<metadata.Width;p++)
                         {
                             var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                            
+                            data[p, i] = heightValue;
                             if (heightValue != -10000)
                             {
                                 min = Math.Min(min, heightValue);
@@ -125,24 +126,25 @@ namespace GeoTiffSharp
 
                 if(!string.IsNullOrEmpty(bitmapFilename))
                 {
-                    Bitmap bm = new Bitmap(metadata.Width, metadata.Height);
-                    for (int i = 0; i < metadata.Height; i++)
-                    {
-                        byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
-                        tiff.ReadScanline(buffer, i);
-                        for (int p = 0; p < metadata.Width; p++)
-                        {
-                            var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                            var normalizedColor = 0;
-                            if (heightValue != -10000)
-                            {
-                                normalizedColor = (short)((heightValue - min) / range * 255);
-                            }
-                            bm.SetPixel(p, i, Color.FromArgb(normalizedColor, normalizedColor, normalizedColor));
-                        }
-                    }
+                    DiagnosticUtils.OutputDebugBitmap(data, min, max, bitmapFilename, -10000);
+                    //Bitmap bm = new Bitmap(metadata.Width, metadata.Height);
+                    //for (int i = 0; i < metadata.Height; i++)
+                    //{
+                    //    byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
+                    //    tiff.ReadScanline(buffer, i);
+                    //    for (int p = 0; p < metadata.Width; p++)
+                    //    {
+                    //        var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
+                    //        var normalizedColor = 0;
+                    //        if (heightValue != -10000)
+                    //        {
+                    //            normalizedColor = (short)((heightValue - min) / range * 255);
+                    //        }
+                    //        bm.SetPixel(p, i, Color.FromArgb(normalizedColor, normalizedColor, normalizedColor));
+                    //    }
+                    //}
 
-                    bm.Save(bitmapFilename);
+                    //bm.Save(bitmapFilename);
                 }
             }                                                                                               
         }

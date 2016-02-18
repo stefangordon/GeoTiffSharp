@@ -27,7 +27,7 @@ namespace Sample
             var objBitmapOutput = Path.Combine(Path.GetDirectoryName(objPath), "objDiagnostic.bmp");
             if (File.Exists(objBitmapOutput)) File.Delete(objBitmapOutput);
 
-            var objResult = GeoObj.ParseMetadata(objPath, objBinaryOutput, objBitmapOutput);
+            var objResult = GeoObj.ParseMetadata(objPath, objBinaryOutput, objBitmapOutput, 100);
             File.WriteAllText(objMetadataOutput, JsonConvert.SerializeObject(objResult, Formatting.Indented));
             
             // Save metadata
