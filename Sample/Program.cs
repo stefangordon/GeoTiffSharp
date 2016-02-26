@@ -19,12 +19,12 @@ namespace Sample
         static void Main(string[] args)
         {
             // OBJ Testing
-            var objMetadataOutput = Path.Combine(Path.GetDirectoryName(objPath), "objMetadata.json");
+            var objMetadataOutput = Path.Combine(Path.GetDirectoryName(objPath), "objSample.json");
             if (File.Exists(objMetadataOutput)) File.Delete(objMetadataOutput);
-            var objBinaryOutput = Path.Combine(Path.GetDirectoryName(objPath), "objBinary.dat");
+            var objBinaryOutput = Path.Combine(Path.GetDirectoryName(objPath), "objSample.dat");
             if (File.Exists(objBinaryOutput)) File.Delete(objBinaryOutput);
 
-            var objBitmapOutput = Path.Combine(Path.GetDirectoryName(objPath), "objDiagnostic.bmp");
+            var objBitmapOutput = Path.Combine(Path.GetDirectoryName(objPath), "objSample.bmp");
             if (File.Exists(objBitmapOutput)) File.Delete(objBitmapOutput);
 
             var objConverter = new GeoObj();
@@ -32,15 +32,15 @@ namespace Sample
             objConverter.ConvertToHeightMap(objPath, objBinaryOutput, objMetadataOutput, objBitmapOutput);
             
             // Save metadata
-            var outputManifestPath = Path.Combine(Path.GetDirectoryName(tiffPath), "metadata.json");
+            var outputManifestPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.json");
             if (File.Exists(outputManifestPath)) File.Delete(outputManifestPath);
             
             // Save image              
-            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "binary.dat");
+            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.dat");
             if (File.Exists(outputPath)) File.Delete(outputPath);
 
-            var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "diagnostic.bmp");
-            if (File.Exists(bitmapPath)) File.Decrypt(bitmapPath);
+            var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.bmp");
+            if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
 
             using (GeoTiff tiffConverter = new GeoTiff())
             {
