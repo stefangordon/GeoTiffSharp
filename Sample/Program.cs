@@ -32,14 +32,14 @@ namespace Sample
             objConverter.ConvertToHeightMap(objPath, objBinaryOutput, objMetadataOutput, objBitmapOutput);
             
             // Save metadata
-            var outputManifestPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.json");
+            var outputManifestPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample4.json");
             if (File.Exists(outputManifestPath)) File.Delete(outputManifestPath);
             
             // Save image              
-            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.dat");
+            var outputPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample4.dat");
             if (File.Exists(outputPath)) File.Delete(outputPath);
 
-            var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample.bmp");
+            var bitmapPath = Path.Combine(Path.GetDirectoryName(tiffPath), "tiffSample4.bmp");
             if (File.Exists(bitmapPath)) File.Delete(bitmapPath);
 
             using (GeoTiff tiffConverter = new GeoTiff())

@@ -109,7 +109,7 @@ namespace GeoTiffSharp
             }
         }
 
-        private void WriteBinary(string inputFilename, string outputFilename, string bitmapFilename, FileMetadata metadata)
+        private void WriteBinary(string inputFilename, Stream output, string bitmapFilename, FileMetadata metadata)
         {
             float min = float.MaxValue;
             float max = float.MinValue;
@@ -117,44 +117,48 @@ namespace GeoTiffSharp
 
             float[,] data = new float[metadata.Width, metadata.Height];
 
-
-            using (var outStream = File.OpenWrite(outputFilename))
+            for (int i = 0; i < metadata.Height; i++)
             {
-                BinaryWriter writer = new BinaryWriter(outStream);
-
-                for (int i = 0; i < metadata.Height; i++)
+                byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
+                _tiff.ReadScanline(buffer, i);
+                for (int p = 0; p < metadata.Width; p++)
                 {
-                    byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
-                    _tiff.ReadScanline(buffer, i);
-                    for (int p = 0; p < metadata.Width; p++)
+                    var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
+                    data[p, i] = heightValue;
+                    if (heightValue != -10000)
                     {
-                        var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                        data[p, i] = heightValue;
-                        if (heightValue != -10000)
-                        {
-                            min = Math.Min(min, heightValue);
-                            max = Math.Max(max, heightValue);
-                        }
+                        min = Math.Min(min, heightValue);
+                        max = Math.Max(max, heightValue);
                     }
-                    outStream.Write(buffer, 0, metadata.Width * 4);
                 }
+                output.Write(buffer, 0, metadata.Width * metadata.BitsPerSample / 8);
+            }
 
-                // compute range of heights so we can normalize the values for the grayscale bmp
-                range = max - min;
+            // compute range of heights so we can normalize the values for the grayscale bmp
+            range = max - min;
 
-                if (!string.IsNullOrEmpty(bitmapFilename))
-                {
-                    DiagnosticUtils.OutputDebugBitmap(data, min, max, bitmapFilename, -10000);
-                }
+            if (!string.IsNullOrEmpty(bitmapFilename))
+            {
+                DiagnosticUtils.OutputDebugBitmap(data, min, max, bitmapFilename, -10000);
             }
         }
+       
 
         public void ConvertToHeightMap(string inputFile, string outputBinary, string outputMetadata, string outputDiagnosticBitmap)
         {
-            var result = ParseMetadata(inputFile);
-            File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(result, Formatting.Indented));
+            var metadata = ParseMetadata(inputFile);
 
-            WriteBinary(inputFile, outputBinary, outputDiagnosticBitmap, result);
+            MemoryStream buffer = new MemoryStream();
+            WriteBinary(inputFile, buffer, outputDiagnosticBitmap, metadata);
+
+            buffer.Position = 0;
+
+            using (var fileStream = File.OpenWrite(outputBinary))
+            {
+                ScaleBinary.Reduce(metadata, buffer, fileStream, 64000);
+            }
+
+            File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(metadata, Formatting.Indented));
         }
     }
 }
